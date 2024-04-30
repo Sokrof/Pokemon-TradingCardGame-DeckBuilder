@@ -1,50 +1,41 @@
-
-:root {
-    --background: #3C343D;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;  
-}
-
-body {
-    background: var(--background);
-    display: grid;
-    place-items: center;
-    height: 100vh;
-}
-
-.gallery {
+:host .background {
+    display: flex;
+    flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
+    justify-content: center; /* Centra verticalmente el contenido */
+    align-items: center; /* Centra horizontalmente el contenido */
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+  }
+  
+  :host .mensaje {
+    font-size: 20px; /* Tamaño del texto */
+    margin-bottom: 10px; /* Espacio entre el mensaje y la galería */
+  }
+  
+  :host .gallery {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
-    max-width: 800px;
-}
-
-.card {
+    max-width: 900px;
+  }
+  
+  
+  :host .card {
     position: relative;
-    left: 0;
-    width: 5rem;
+    width: calc((100% - 3 * 16px) / 3); /* Ajusta el ancho de la tarjeta */
     border-radius: 1rem;
-    height: 24rem;
     overflow: hidden;
-    background: var(--background);
-    transition: 0.4s ease-in-out;
+    transition: all 0.2s ease-in-out;
     box-shadow: 0 5px 12px rgba(0, 0, 0, 0.5);
-    flex: 0.25;
-}
-
-.card img {
-    height: 24rem !important;
-}
-
-.card:hover {
-    flex: 2;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 0.5rem;
-}
-
-
+  }
+  
+  :host .card img {
+    width: 100%; /* Establece el ancho de la imagen al 100% de la tarjeta */
+    height: auto; /* Permite que la altura de la imagen se ajuste automáticamente para mantener la relación de aspecto original */
+  }
+  
+  :host .card:hover {
+    transform: scale(1.05); /* Amplía la tarjeta al pasar el cursor sobre ella */
+    z-index: 1; /* Asegura que la tarjeta activa esté en la parte superior */
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.8); /* Ajusta la sombra para resaltar la tarjeta activa */
+  }
+  
