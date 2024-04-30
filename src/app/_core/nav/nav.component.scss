@@ -10,6 +10,7 @@
     background-image: linear-gradient(120deg, #3b7977 0%, #72b1bb 100%);
     color: white;
     font-weight: 600;
+    z-index: 1000; /* Asegura que el navbar esté siempre encima */
 
     img {
         margin: 0 16px; 
