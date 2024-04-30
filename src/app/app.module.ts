@@ -8,6 +8,8 @@ import { FooterComponent } from './_core/footer/footer.component';
 import { NavComponent } from './_core/nav/nav.component';
 import { LoginComponent } from './components/login/login.component';
 -LoginComponent
+import { RegistroComponent } from './components/registro/registro.component';
+-RegistroComponent
 
 @NgModule({
   declarations: [
