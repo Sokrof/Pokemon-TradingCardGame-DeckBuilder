@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './_core/footer/footer.component';
 import { NavComponent } from './_core/nav/nav.component';
+import { LoginComponent } from './components/login/login.component';
+-LoginComponent
 
 @NgModule({
   declarations: [
@@ -16,7 +18,7 @@ import { NavComponent } from './_core/nav/nav.component';
     AppRoutingModule,
     HttpClientModule,
     NavComponent,
-    FooterComponent
+    FooterComponent,
   ],
   providers: [],
   bootstrap: [AppComponent]
