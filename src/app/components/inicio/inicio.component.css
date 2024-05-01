@@ -3,9 +3,10 @@
     flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
     justify-content: center; /* Centra verticalmente el contenido */
     align-items: center; /* Centra horizontalmente el contenido */
-    height: 100vh; /* Ocupa toda la altura de la ventana */
+    height: 90vh; /* Ocupa toda la altura de la ventana */
   }
   
+
   :host .mensaje {
     font-size: 20px; /* Tamaño del texto */
     margin-bottom: 10px; /* Espacio entre el mensaje y la galería */

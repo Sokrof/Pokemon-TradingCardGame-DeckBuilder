@@ -1,14 +1,21 @@
+
+// Usamos SCSS en lugar de CSS para modularizar los estilos y evitar la reutilización del código
+// y aprovechar para desarrollar conocimientos nuevos y algo más avanzados.
+
+// Importación de estilos de Tailwind CSS y Bootstrap
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 @import "~bootstrap/dist/css/bootstrap.min.css";
 
+// Estilos para el cuerpo de la página
 body {
     background-image: url('../src/assets/background-home.png');
-    background-size: cover;
+    background-size:contain;
     background-position: center;
 }
 
+// Estilos para el componente raíz del host
 :host {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     font-size: 14px;
@@ -18,19 +25,22 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+// Estilos para los encabezados
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-    margin: 8px 0;
+    margin: 8px 0; // Márgenes superior e inferior
 }
 
+// Estilos para los párrafos
 p {
     margin: 0;
 }
 
+// Estilos para el contenido
 .content {
     margin: 82px auto 32px;
     padding: 0 16px;
