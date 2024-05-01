@@ -3,6 +3,12 @@
     fill: #888; /* Color de relleno gris para los íconos */
 }
 
+:host .content{
+    background-image: url('/assets/background-home2.png');
+    background-size: cover;
+    background-position: center;
+}
+
 /* Estilos para el contenedor de las tarjetas */
 .card-container {
     display: flex; 
@@ -73,7 +79,7 @@
 
 /* Estilos para el fondo del drawer*/
 .drawer {
-    background-image: url('../../../../assets/background-cards.png'); /* Imagen de fondo */
+    background-image: url('/assets/background-cards.png'); /* Imagen de fondo */
     background-size: cover; /* Tamaño de la imagen de fondo que cubre */
     background-position: center; /* Posición de la imagen de fondo centrada */
 }

@@ -4,34 +4,20 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 60px;
+    height: 55px;
     display: flex;
     align-items: center;
     background-image: linear-gradient(120deg, #3b7977 0%, #72b1bb 100%);
     color: white;
     font-weight: 600;
     z-index: 1000; /* Asegura que el navbar esté siempre encima */
+    border-bottom: 3px solid rgb(44, 117, 139);
 
     img {
         margin: 0 16px; 
     }
-
-    #twitter-logo {
-        height: 40px;
-        margin: 0 8px; 
-    }
-
-    #youtube-logo {
-        height: 40px;
-        margin: 0 16px; 
-    }
-
-    #twitter-logo:hover,
-    #youtube-logo:hover {
-        opacity: 0.8; /* Opacidad al pasar el mouse sobre los logos */
-    }
 }
 
 .spacer {
-    flex: 1; /* Espacio flexible para distribuir el espacio restante */
+    flex: 0.99; /* Espacio flexible para distribuir el espacio restante */
 }

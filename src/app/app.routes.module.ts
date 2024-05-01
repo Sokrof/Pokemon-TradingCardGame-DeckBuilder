@@ -10,6 +10,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent }, // Ruta para el Login
   { path: '', redirectTo: '/inicio', pathMatch: 'full' }, // Ruta por defecto, redirige '/' a '/inicio'
   { path: 'registro', component: RegistroComponent }, // Ruta para el Registro
+  { path: 'mazos', loadChildren: () => import('./modules/deck.routes') },
 ];
 
 // Importación del módulo RouterModule y configuración de las rutas principales

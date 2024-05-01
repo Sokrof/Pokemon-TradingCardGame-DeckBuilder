@@ -1,6 +1,7 @@
 /* Importación de la fuente Mulish desde Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Mulish&display=swap');
 
+
 /* Definición de variables CSS globales */
 :host {
     --primary: #DD946F; /* Color primario */
@@ -10,6 +11,7 @@
     --aura: #9265CA80; /* Color de aura */
     --background: #261E5A; /* Color de fondo */
 }
+
 
 /* Estilos generales para todos los elementos dentro del host */
 :host * {
@@ -33,11 +35,11 @@
     width: 100vw;
     display: grid;
     place-items: center;
-    background-image: url(assets/universe.jpg); /* Imagen de fondo */
-    opacity: 0.5; /* Opacidad */
+    background-image: url(/assets/background-home3.png); /* Imagen de fondo */
+    opacity: 1; /* Opacidad */
     background-size: 100%; /* Tamaño de la imagen de fondo */
     background-repeat: no-repeat;
-    background-size: auto;
+    background-size: cover;
 }
 
 /* Estilos para centrar elementos verticalmente y horizontalmente */

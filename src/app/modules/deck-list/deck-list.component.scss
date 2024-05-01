@@ -1,7 +1,14 @@
 /* Estilos para los iconos dentro de las tarjetas */
 .card svg.material-icons path {
-    fill: #888;
+    fill: #ddc6c6;
 }
+
+:host .content{
+    background-image: url('/assets/testimonial-my-cards.png');
+    background-size: cover;
+    background-position: center;
+}
+
 
 /* Contenedor de las tarjetas */
 .card-container {
@@ -72,7 +79,7 @@
 
 /* Fondo para el drawer */
 .drawer {
-    background-image: url('../../../../assets/testimonial-my-cards.png');
+    background-image: url('/assets/testimonial-my-cards.png');
     background-size: cover;
     background-position: center;
 }

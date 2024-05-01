@@ -32,7 +32,7 @@ h3,
 h4,
 h5,
 h6 {
-    margin: 8px 0; // Márgenes superior e inferior
+    margin: 0px 0; // Márgenes superior e inferior
 }
 
 // Estilos para los párrafos
@@ -42,7 +42,7 @@ p {
 
 // Estilos para el contenido
 .content {
-    margin: 82px auto 32px;
+    margin: 55px auto 0px;
     padding: 0 16px;
     flex-direction: column;
     align-items: center;

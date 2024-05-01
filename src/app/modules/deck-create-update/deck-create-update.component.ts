@@ -75,10 +75,11 @@ export class DeckCreateUpadateComponent implements OnInit {
     this.buildForm(); // Construye el formulario
   }
 
+  // Especifica el mínimo y máximo de cartas
   buildForm(): void {
     this.form = this._formBuilder.group({
       name: ['', Validators.required], // Campo de nombre requerido
-      cards: [[], [cardCountValidator(24, 60), uniqueCardNameValidator()]] // Campo de cartas con validadores personalizados
+      cards: [[], [cardCountValidator(2, 60), uniqueCardNameValidator()]] // Campo de cartas con validadores personalizados
     });
   }
 
