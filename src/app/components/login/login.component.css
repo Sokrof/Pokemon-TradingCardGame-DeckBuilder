@@ -1,49 +1,56 @@
+/* Importación de la fuente Mulish desde Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Mulish&display=swap');
 
+/* Definición de variables CSS globales */
 :host {
-    --primary: #DD946F;
-    --primary-hover: #CD7D7C;
-    --secondary: #EFD0F8;
-    --secondary-hover: #B8A1D9;
-    --aura: #9265CA80;
-    --background: #261E5A;
-  }
-  
-  :host * {
+    --primary: #DD946F; /* Color primario */
+    --primary-hover: #CD7D7C; /* Color primario al pasar el ratón */
+    --secondary: #EFD0F8; /* Color secundario */
+    --secondary-hover: #B8A1D9; /* Color secundario al pasar el ratón */
+    --aura: #9265CA80; /* Color de aura */
+    --background: #261E5A; /* Color de fondo */
+}
+
+/* Estilos generales para todos los elementos dentro del host */
+:host * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     background-color: var(--background);
-    font-family: Mulish;
-  }
-  
-  :host h1 {
-    color: var(--secondary);
-  }
-  
-  :host .background {
+    font-family: Mulish; /* Uso de la fuente Mulish */
+}
+
+/* Estilos para los encabezados h1 dentro del host */
+:host h1 {
+    color: var(--secondary); /* Color secundario */
+}
+
+/* Estilos para el contenedor de fondo */
+:host .background {
     content: "";
     position: absolute;
     height: 100vh;
     width: 100vw;
     display: grid;
     place-items: center;
-    background-image: url(assets/universe.jpg);
-    opacity: 0.5;
-    background-size: 100%;
+    background-image: url(assets/universe.jpg); /* Imagen de fondo */
+    opacity: 0.5; /* Opacidad */
+    background-size: 100%; /* Tamaño de la imagen de fondo */
     background-repeat: no-repeat;
     background-size: auto;
-  }
-  
-  :host .centering {
+}
+
+/* Estilos para centrar elementos verticalmente y horizontalmente */
+:host .centering {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     width: 100vw;
-  }
-  
-  :host .my-form {
+}
+
+/* Estilos para el formulario */
+:host .my-form {
     display: flex;
     flex-direction: column;
     position: relative;
@@ -56,25 +63,28 @@
     max-width: 28.75rem;
     width: 100%;
     padding: 2rem;
-  }
-  
-  :host .login-welcome {
+}
+
+/* Estilos para la imagen de bienvenida en el formulario */
+:host .login-welcome {
     height: 5rem;
     width: 5rem;
     border-radius: 50%;
     object-fit: cover;
-  }
-  
-  :host .login-welcome-row {
+}
+
+/* Estilos para la fila de bienvenida en el formulario */
+:host .login-welcome-row {
     display: flex;
     width: 100%;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     gap: 0.5rem;
-  }
-  
-  :host .my-form__button {
+}
+
+/* Estilos para los botones del formulario */
+:host .my-form__button {
     background-color: var(--primary);
     color: var(--background);
     white-space: nowrap;
@@ -96,9 +106,10 @@
     box-shadow: 0 5px 10px rgba(0,0,0,.15);
     transition: all .3s ease;
     -webkit-transition: all .3s ease;
-  }
-  
-  :host .text-field input {
+}
+
+/* Estilos para los campos de texto del formulario */
+:host .text-field input {
     color: var(--secondary);
     font-size: 1rem;
     font-weight: 500;
@@ -113,21 +124,25 @@
     border-radius: 0.5rem;
     text-indent: 1.25rem;
     margin-top: 0.5rem;
-  }
-  
-  :host .my-form__button:hover {
+}
+
+/* Estilos al pasar el ratón sobre el botón del formulario */
+:host .my-form__button:hover {
     background-color: var(--primary-hover);
-  }
-  
-  :host .text-field {
+}
+
+/* Estilos para los campos de texto del formulario */
+:host .text-field {
     position: relative;
-  }
-  
-  :host .text-field input::-webkit-input-placeholder { /* Edge */
+}
+
+/* Estilos para el texto de marcador de posición en los campos de texto del formulario */
+:host .text-field input::-webkit-input-placeholder { /* Edge */
     color: var(--secondary-hover);
-  }
-  
-  :host .text-field img {
+}
+
+/* Estilos para el icono en los campos de texto del formulario */
+:host .text-field img {
     position: absolute;
     right: -0.125rem;
     bottom: -0.25rem;
@@ -135,52 +150,60 @@
     height: 2rem;
     transform: translate(-50%,-50%);
     transform-origin: center;
-  }
-  
-  :host .text-field input:focus {
+}
+
+/* Estilos al enfocar los campos de texto del formulario */
+:host .text-field input:focus {
     border: 1px solid var(--primary);
-  }
-  
-  :host .text-field label {
+}
+
+/* Estilos para la etiqueta de los campos de texto del formulario */
+:host .text-field label {
     color: var(--secondary);
     font-size: 0.875rem;
     font-weight: 600;
     letter-spacing: .03rem;
     z-index: 10;
-  }
-  
-  :host .input-icon {
+}
+
+/* Estilos para el icono en los campos de texto del formulario */
+:host .input-icon {
     position: absolute;
     bottom: 0;
     top: 55%;
     right: 0.5rem;
     transform: translate(-50%, -50%);
     transform-origin: center;
-  }
-  
-  :host .my-form__actions {
+}
+
+/* Estilos para las acciones del formulario */
+:host .my-form__actions {
     display: flex;
     flex-direction: column;
     color: var(--secondary);
     gap: 1rem;
     margin-top: 0.5rem;
-  }
-  
-  :host .my-form__actions a {
+}
+
+/* Estilos para los enlaces en las acciones del formulario */
+:host .my-form__actions a {
     color: var(--secondary);
     font-weight: 600;
-  }
-  
-  :host .my-form__actions a:hover {
+}
+
+/* Estilos al pasar el ratón sobre los enlaces en las acciones del formulario */
+:host .my-form__actions a:hover {
     color: #a7a2cb;
-  }
-  
-  :host .my-form__row {
+}
+
+/* Estilos para la fila del formulario */
+:host .my-form__row {
     display: flex;
     justify-content: space-between;
-  }
-  
-  :host .my-form__signup {
+}
+
+/* Estilos para el registro en el formulario */
+:host .my-form__signup {
     display: flex;
     justify-content: center;
-  }
+}
