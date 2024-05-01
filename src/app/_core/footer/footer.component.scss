@@ -31,12 +31,13 @@ a:hover {
     }
 }
 
-footer {
+:host footer {
     /* Estilos para el pie de página */
-    margin-top: 8px;
+    height: 90px;
     display: flex;
     align-items: center;
     line-height: 20px;
+    background-image: linear-gradient(120deg, #74bcd8 0%, #166477 100%);
 
     a {
         display: flex;
