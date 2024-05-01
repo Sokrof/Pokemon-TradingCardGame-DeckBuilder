@@ -1,0 +1,79 @@
+/* Estilos para los íconos dentro de las tarjetas */
+.card svg.material-icons path {
+    fill: #888; /* Color de relleno gris para los íconos */
+}
+
+/* Estilos para el contenedor de las tarjetas */
+.card-container {
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    margin-top: 16px; 
+}
+
+/* Estilos generales para las tarjetas */
+.card {
+    all: unset; /* Reinicia todos los estilos heredados */
+    transition: all 0.2s ease-in-out; /* Transición suave para cambios de estilo */
+}
+
+/* Estilos para las tarjetas, excepto la última en el contenedor */
+.card-container .card:not(:last-child) {
+    margin-right: 0; /* Elimina el margen derecho de la última tarjeta en la fila */
+}
+
+/* Estilos específicos para las tarjetas pequeñas */
+.card.card-small {
+    height: 16px; /* Altura de la tarjeta pequeña de 16 píxeles */
+    width: 168px; /* Ancho de la tarjeta pequeña de 168 píxeles */
+}
+
+/* Estilos para las tarjetas que no son resaltadas */
+.card-container .card:not(.highlight-card) {
+    cursor: pointer; /* Cambia el cursor al pasar sobre la tarjeta */
+}
+
+/* Efecto de elevación y sombra al pasar el ratón sobre las tarjetas */
+.card-container .card:not(.highlight-card):hover {
+    transform: translateY(-3px); /* Elevación de la tarjeta en 3 píxeles */
+    box-shadow: 0 4px 17px rgba(0, 0, 0, 0.35); /* Sombra suave */
+}
+
+/* Cambio de color para los íconos dentro de las tarjetas al pasar el ratón */
+.card-container .card:not(.highlight-card):hover .material-icons path {
+    fill: rgb(105, 103, 103); /* Cambio de color para los íconos al pasar el ratón */
+}
+
+/* Estilos para las tarjetas resaltadas */
+.card.highlight-card {
+    background-color: #1976d2; /* Color de fondo azul para las tarjetas resaltadas */
+    color: white; /* Color de texto blanco */
+    font-weight: 600;
+    border: none;
+    width: auto; 
+    min-width: 30%; 
+    position: relative; 
+}
+
+/* Estilos para los filtros de tarjetas */
+.card-filter {
+    border-radius: 4px;
+    border: 1px solid #eee; 
+    background-color: #fafafa; 
+    height: 40px; 
+    width: 200px; 
+    margin: 0 8px 16px; 
+    padding: 16px; 
+    display: flex; 
+    flex-direction: row; /* Dirección de los elementos en fila */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Alinear verticalmente */
+    line-height: 24px; /* Altura de línea */
+}
+
+/* Estilos para el fondo del drawer*/
+.drawer {
+    background-image: url('../../../../assets/background-cards.png'); /* Imagen de fondo */
+    background-size: cover; /* Tamaño de la imagen de fondo que cubre */
+    background-position: center; /* Posición de la imagen de fondo centrada */
+}

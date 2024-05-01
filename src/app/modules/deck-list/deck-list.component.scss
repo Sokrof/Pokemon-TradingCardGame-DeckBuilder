@@ -1,0 +1,78 @@
+/* Estilos para los iconos dentro de las tarjetas */
+.card svg.material-icons path {
+    fill: #888;
+}
+
+/* Contenedor de las tarjetas */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+/* Estilos básicos para las tarjetas */
+.card {
+    all: unset;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Elimina el margen derecho de la última tarjeta en una fila */
+.card-container .card:not(:last-child) {
+    margin-right: 0;
+}
+
+/* Estilos para tarjetas pequeñas */
+.card.card-small {
+    height: 16px;
+    width: 168px;
+}
+
+/* Estilos para tarjetas que no son resaltadas */
+.card-container .card:not(.highlight-card) {
+    cursor: pointer;
+}
+
+/* Efecto de elevación y cambio de color al pasar el ratón sobre las tarjetas */
+.card-container .card:not(.highlight-card):hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 17px rgba(0, 0, 0, 0.35);
+}
+
+/* Cambio de color de los iconos al pasar el ratón sobre las tarjetas */
+.card-container .card:not(.highlight-card):hover .material-icons path {
+    fill: rgb(105, 103, 103);
+}
+
+/* Estilos para tarjetas resaltadas */
+.card.highlight-card {
+    background-color: #1976d2;
+    color: white;
+    font-weight: 600;
+    border: none;
+    width: auto;
+    min-width: 30%;
+    position: relative;
+}
+
+/* Estilos para el contenedor de mazos */
+.card-deck {
+    border-radius: 4px;
+    border: 1px solid #eee;
+    background-color: #fafafa;
+    height: 100%;
+    width: 80%;
+    margin: 0 8px;
+    padding: 16px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    line-height: 24px;
+}
+
+/* Fondo para el drawer */
+.drawer {
+    background-image: url('../../../../assets/testimonial-my-cards.png');
+    background-size: cover;
+    background-position: center;
+}

@@ -1,0 +1,18 @@
+/* Definición de la animación 'spin' utilizando keyframes */
+@keyframes spin {
+    /* Rotación inicial en 0 grados */
+    0% {
+        transform: rotate(0deg);
+    }
+
+    /* Rotación final en 360 grados */
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Aplicación de la animación 'spin' a elementos con la clase 'animate-spin-slow' */
+.animate-spin-slow {
+    /* Animación de rotación durante 2 segundos, con movimiento lineal e infinito */
+    animation: spin 2s linear infinite;
+}
