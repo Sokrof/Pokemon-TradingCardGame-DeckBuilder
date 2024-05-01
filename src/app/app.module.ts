@@ -10,6 +10,8 @@ import { LoginComponent } from './components/login/login.component';
 -LoginComponent
 import { RegistroComponent } from './components/registro/registro.component';
 -RegistroComponent
+import { TitlePageComponent } from 'src/shared/title-page/title-page.component';
+-TitlePageComponent
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { RegistroComponent } from './components/registro/registro.component';
     HttpClientModule,
     NavComponent,
     FooterComponent,
+    TitlePageComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
