@@ -9,8 +9,25 @@
 
   :host .mensaje {
     font-size: 20px; /* Tamaño del texto */
-    margin-bottom: 10px; /* Espacio entre el mensaje y la galería */
+    margin-bottom: 1px; /* Espacio entre el mensaje y la galería */
+    text-align: center; /* Centrar el texto horizontalmente */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombreado */
   }
+
+  :host .mensajeBienvenida {
+    font-size: 35px; /* Tamaño del texto */
+    margin-bottom: 1px; /* Espacio entre el mensaje y la galería */
+    text-align: center; /* Centrar el texto horizontalmente */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombreado */
+  }
+
+  .mensaje-container {
+    background-color: rgb(255, 244, 91);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
   
   :host .gallery {
     display: flex;
