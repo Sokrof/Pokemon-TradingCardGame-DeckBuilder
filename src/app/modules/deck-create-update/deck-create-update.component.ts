@@ -56,15 +56,15 @@ export class DeckCreateUpadateComponent implements OnInit {
 
     // Mapa de tipos en inglés → español
     typeTranslations: { [key: string]: string } = {
-        'Colorless': 'Incoloro',
-        'Darkness': 'Oscuridad',
+        'Colorless': 'Normal',
+        'Darkness': 'Siniestro',
         'Dragon': 'Dragón',
         'Fairy': 'Hada',
         'Fighting': 'Lucha',
         'Fire': 'Fuego',
         'Grass': 'Planta',
         'Lightning': 'Rayo',
-        'Metal': 'Metal',
+        'Metal': 'Acero',
         'Psychic': 'Psíquico',
         'Water': 'Agua',
         'Unown': 'Unown'
