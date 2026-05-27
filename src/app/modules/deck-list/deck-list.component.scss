@@ -64,9 +64,10 @@
 
 /* Estilos para el contenedor de mazos */
 .card-deck {
+    position: relative;
+    overflow: hidden;
     border-radius: 4px;
     border: 1px solid #eee;
-    background-color: #fafafa;
     height: 100%;
     width: 80%;
     margin: 0 8px;
@@ -75,6 +76,34 @@
     justify-content: center;
     align-items: center;
     line-height: 24px;
+}
+
+.card-deck::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 16%, rgba(255, 255, 255, 0.72), transparent 42%);
+    pointer-events: none;
+}
+
+.card-deck > * {
+    position: relative;
+    z-index: 1;
+}
+
+.deck-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 28px;
+    max-width: 100%;
+    margin-bottom: 10px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.16);
 }
 
 /* Fondo para el drawer */

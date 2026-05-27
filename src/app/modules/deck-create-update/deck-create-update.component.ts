@@ -343,12 +343,12 @@ export class DeckCreateUpadateComponent implements OnInit {
             if (this.deckId !== 'null') {
                 const updated = this.deckService.updateDeck(this.deck);
                 if (updated) {
-                    this._router.navigateByUrl('/');
+                    this._router.navigateByUrl('/mazos');
                 }
             } else {
                 const saved = this.deckService.addToDeck(this.deck);
                 if (saved) {
-                    this._router.navigateByUrl('/');
+                    this._router.navigateByUrl('/mazos');
                 }
             }
         }

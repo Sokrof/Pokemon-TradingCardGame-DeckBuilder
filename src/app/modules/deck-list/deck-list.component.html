@@ -10,11 +10,20 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 <!-- Iteración sobre las barajas -->
                 <ng-container *ngFor="let deck of decks">
-                    <div class="card card-deck">
+                    <div class="card card-deck"
+                        [style.background]="getDeckCardBackground(deck)"
+                        [style.border-color]="getDeckTypeColor(deck)">
+
+                        <div class="deck-type-badge"
+                            [style.background-color]="getDeckTypeColor(deck)"
+                            [style.color]="getDeckTextColor(deck)">
+                            <span>{{ getTypeIcon(getDominantType(deck)) }}</span>
+                            <span>{{ translateType(getDominantType(deck)) }}</span>
+                        </div>
 
                         <!-- Imagen del mazo -->
                         <div class="flex justify-center">
-                            <img width="130" alt="Deck" src="/assets/cards.png" alt="">
+                            <img width="130" alt="Deck" [src]="deck.image || 'assets/mazo.png'">
                         </div>
 
                         <!-- Nombre del mazo -->
