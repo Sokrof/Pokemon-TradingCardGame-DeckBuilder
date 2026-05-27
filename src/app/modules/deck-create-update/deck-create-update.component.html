@@ -1,23 +1,19 @@
 <div class="content" role="main">
 
-    <!-- Componente de título de página -->
     <app-title-page [title]="deckId == 'null' ? 'Nuevo Mazo' : 'Editar Mazo'"></app-title-page>
 
- 
     <div class="flex flex-col items-center border-b-2 pb-3">
 
-        <!-- Formulario de creación o edición de mazos -->
         <div class="container max-w-md">
             <form autocomplete="off" novalidate [formGroup]="form" (ngSubmit)="onSubmit()">
 
-                <!-- Input para el nombre del mazo -->
                 <div>
-                    <input matInput [formControlName]="'name'" [(ngModel)]="deck.name"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    <input matInput formControlName="name" [(ngModel)]="deck.name"
+                        class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [ngClass]="{'border-red-500': formSubmitted && f.name.errors?.required, 'border-gray-300': !(formSubmitted && f.name.errors?.required)}"
                         placeholder="Ponle un nombre a tu Mazo" required />
                 </div>
 
-                <!-- Botones de acción -->
                 <div class="flex justify-between mt-4">
                     <button type="button" class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700
                     rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600
@@ -30,10 +26,9 @@
                     </button>
                 </div>
 
-                <!-- Mensajes de validación -->
                 <div *ngIf="formSubmitted && form.invalid">
                     <p class="text-red-600" *ngIf="f.name.errors?.required">
-                        <i>Nombre obligatório!</i>
+                        <i>¡Pon un nombre al mazo antes de añadir cartas!</i>
                     </p>
                     <p class="text-red-600" *ngIf="f.cards.errors?.cardCount">
                         <i>Debe tener entre 2 y 60 Cartas</i>
@@ -45,36 +40,44 @@
 
             </form>
 
-            <!-- Información sobre el número de cartas en el mazo -->
             <p class="text-xs text-gray-900 mt-2" *ngIf="itensDeck.length > 0">
-                <i>El Mazo contiene <b>{{itensDeck.length}}</b> Cartas{{itensDeck.length > 1 ? '(s)' : ''}}</i>
+                <i>El Mazo contiene <b>{{itensDeck.length}}</b> Carta{{itensDeck.length > 1 ? 's' : ''}}</i>
             </p>
         </div>
 
     </div>
 
-    <!-- Contenedor de cartas del mazo -->
-    <div class="card-container">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            <a *ngFor="let card of itensDeck" class="card">
-                <img [src]="card.images.small" alt="{{ card.name }}" (click)="getDetails(card, true)">
-            </a>
+    <div class="card-container" *ngIf="itensDeck.length > 0">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div *ngFor="let card of itensDeck" class="card relative grid-card-fix">
+                <img [src]="card.images.small" alt="{{ card.name }}" class="cursor-pointer" (click)="getDetails(card, true)">
+                <button (click)="removeDeckCard(card, $event)"
+                    class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold hover:bg-red-700 shadow-lg cursor-pointer z-30">
+                    ✕
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Cajón de selección de cartas -->
     <div *ngIf="isDrawerOpen" class="fixed top-0 right-0 h-full w-full bg-white shadow-lg z-50 overflow-y-auto drawer" (scroll)="onDrawerScroll($event)">
         <div class="p-4">
             <div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                <h3 class="text-2xl font-semibold flex">CARTAS</h3>
+                <h3 class="text-2xl font-semibold flex">
+                    CARTAS
+                    <span class="ml-3 text-sm bg-blue-600 text-white rounded-full px-3 py-1 self-center">
+                        {{itensDeck.length}} en el mazo
+                    </span>
+                </h3>
                 <button
-                    class="p-1 ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-200 cursor-pointer transition-colors"
                     (click)="toggleDrawer()">
-                    <span class="text-black h-6 w-6 text-4xl block outline-none focus:outline-none">×</span>
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Volver al mazo
                 </button>
             </div>
             <div class="flex flex-col items-center">
-                <!-- Búsqueda de cartas -->
                 <div class="mt-4 min-w-[75%]">
                     <label for="default-search"
                         class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Buscar</label>
@@ -88,34 +91,58 @@
                         </div>
                         <input type="text" id="default-search" [(ngModel)]="searchTerm" (input)="onInputChange()"
                             class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="    Ingresa el nombre del pokémon" required />
+                            placeholder="Ingresa el nombre del pokémon" required />
                     </div>
                 </div>
 
-                <!-- Animación de carga -->
                 <app-loading *ngIf="isLoading"></app-loading>
 
-                <!-- Contenedor de tipos de cartas -->
-                <div class="card-container">
+                <div class="card-container flex-wrap">
                     <ng-container *ngFor="let type of types">
-                        <button class="card card-filter card-small" (click)="filterType(type)">
-                            <span>{{type}}</span>
+                        <button class="type-chip" 
+                            [style.background-color]="getTypeColor(type)"
+                            [style.border-color]="getTypeColor(type)"
+                            (click)="filterType(type)">
+                            <span class="type-icon">{{getTypeIcon(type)}}</span>
+                            <span class="type-label">{{translateType(type)}}</span>
                         </button>
                     </ng-container>
                 </div>
 
-                <!-- Contenedor de cartas filtradas -->
                 <div class="card-container">
 
                     <ng-container *ngIf="cards && cards.length > 0; else noCardsRef">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            <a *ngFor="let card of cards" class="card">
-                                <img [src]="card.images.small" alt="{{ card.name }}" (click)="getDetails(card, false)">
-                            </a>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            
+                            <div *ngFor="let card of cards" class="card relative group grid-card-fix">
+                                <img [src]="card.images.small" alt="{{ card.name }}" 
+                                    class="cursor-pointer" (click)="getDetails(card, false)">
+
+                                <div *ngIf="getCardCountInDeck(card) > 0" class="always-visible-badge">
+                                    {{getCardCountInDeck(card)}}
+                                </div>
+
+                                <div class="hover-action-container hidden group-hover:flex">
+                                    <button *ngIf="getCardCountInDeck(card) > 0"
+                                        (click)="quickRemoveFromDeck(card, $event)"
+                                        class="bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold shadow-lg cursor-pointer">
+                                        −
+                                    </button>
+                                    <button *ngIf="canAddCard(card)"
+                                        (click)="quickAddToDeck(card, $event)"
+                                        class="bg-green-500 hover:bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold shadow-lg cursor-pointer">
+                                        +
+                                    </button>
+                                    <span *ngIf="!canAddCard(card)"
+                                        class="bg-gray-500 text-white rounded-full px-2 h-8 flex items-center justify-center text-xs font-bold shadow-lg">
+                                        MÁX
+                                    </span>
+                                </div>
+                            </div>
+
                         </div>
                     </ng-container>
 
-                    <!-- Mensaje si no hay cartas -->
                     <ng-template #noCardsRef>
                         <div class="flex flex-col items-center" *ngIf="!isLoading">
                             <h2 class="text-xl font-semibold">No se encontraron resultados</h2>
@@ -124,13 +151,11 @@
 
                 </div>
 
-                <!-- Indicador de carga de más cartas (infinite scroll) -->
                 <div *ngIf="isLoadingMore" class="flex flex-col items-center py-4">
                     <app-loading></app-loading>
                     <p class="text-sm text-gray-500 mt-2">Cargando más cartas...</p>
                 </div>
 
-                <!-- Mensaje de fin de resultados -->
                 <div *ngIf="!hasMoreCards && cards.length > 0" class="flex flex-col items-center py-4">
                     <p class="text-sm text-gray-400">No hay más cartas</p>
                 </div>
@@ -141,15 +166,19 @@
 
 </div>
 
-<!-- Modal para detalles de carta -->
-<!-- CAMBIOS TCGdex: category en vez de supertype, attack.effect en vez de attack.text -->
 <div *ngIf="showModal"
     class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
     <div class="relative w-auto my-6 mx-auto max-w-4xl">
         <div
             class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             <div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                <h3 class="text-2xl font-semibold flex">{{ cardDetails.name }}</h3>
+                <h3 class="text-2xl font-semibold flex">
+                    {{ cardDetails.name }}
+                    <span *ngIf="getCardCountInDeck(cardDetails) > 0"
+                        class="ml-2 bg-blue-600 text-white rounded-full px-3 py-1 text-sm self-center">
+                        {{getCardCountInDeck(cardDetails)}}/4 en mazo
+                    </span>
+                </h3>
                 <button
                     class="p-1 ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                     (click)="toggleModal()">
@@ -172,7 +201,11 @@
                     </p>
 
                     <p class="my-4 text-blueGray-500 text-lg leading-relaxed" *ngIf="cardDetails.types && cardDetails.types.length > 0">
-                        <b>Tipos:</b> {{cardDetails.types}}
+                        <b>Tipos:</b>
+                        <span *ngFor="let t of cardDetails.types" class="inline-flex items-center ml-1 px-2 py-0.5 rounded text-white text-sm"
+                            [style.background-color]="getTypeColor(t)">
+                            {{getTypeIcon(t)}} {{translateType(t)}}
+                        </span>
                     </p>
 
                     <h4 class="text-lg font-semibold" *ngIf="cardDetails.attacks && cardDetails.attacks.length > 0">Movimientos:</h4>
@@ -190,27 +223,30 @@
                 </div>
             </div>
             <div class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
-                <!-- Botón para cancelar -->
                 <button
                     class="bg-slate-400 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button" (click)="toggleModal()">Cancelar
                 </button>
 
-                <!-- Botón para eliminar carta (solo si es un mazo) -->
-                <button
-                    class="bg-red-600 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button" (click)="deleteCartDeck(cardDetails)" *ngIf="isDeck">Eliminar
+                <button *ngIf="getCardCountInDeck(cardDetails) > 0"
+                    class="bg-red-600 text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 cursor-pointer"
+                    type="button" (click)="removeFromDeckModal(cardDetails)">
+                    Eliminar ({{getCardCountInDeck(cardDetails)}})
                 </button>
 
-                <!-- Botón para añadir carta (solo si no es un mazo) -->
-                <button
-                    class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button" (click)="addToDeck(cardDetails)" *ngIf="!isDeck">Añadir Carta
+                <button *ngIf="canAddCard(cardDetails)"
+                    class="bg-emerald-500 text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 cursor-pointer"
+                    type="button" (click)="addToDeck(cardDetails)">
+                    Añadir ({{getCardCountInDeck(cardDetails)}}/4)
                 </button>
+
+                <span *ngIf="!canAddCard(cardDetails)"
+                    class="bg-gray-400 text-white font-bold uppercase text-sm px-6 py-3 rounded mr-1 mb-1">
+                    Máximo alcanzado (4/4)
+                </span>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Fondo oscuro detrás del modal -->
 <div *ngIf="showModal" class="opacity-25 fixed inset-0 z-40 bg-black"></div>

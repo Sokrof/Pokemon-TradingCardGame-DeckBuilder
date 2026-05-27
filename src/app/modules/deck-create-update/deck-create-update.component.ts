@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -54,6 +54,54 @@ export class DeckCreateUpadateComponent implements OnInit {
     currentSearchType: 'all' | 'name' | 'type' = 'all';
     currentSearchValue: string = '';
 
+    // Mapa de tipos en inglés → español
+    typeTranslations: { [key: string]: string } = {
+        'Colorless': 'Incoloro',
+        'Darkness': 'Oscuridad',
+        'Dragon': 'Dragón',
+        'Fairy': 'Hada',
+        'Fighting': 'Lucha',
+        'Fire': 'Fuego',
+        'Grass': 'Planta',
+        'Lightning': 'Rayo',
+        'Metal': 'Metal',
+        'Psychic': 'Psíquico',
+        'Water': 'Agua',
+        'Unown': 'Unown'
+    };
+
+    // Colores de cada tipo
+    typeColors: { [key: string]: string } = {
+        'Colorless': '#A8A878',
+        'Darkness': '#705848',
+        'Dragon': '#7038F8',
+        'Fairy': '#EE99AC',
+        'Fighting': '#C03028',
+        'Fire': '#F08030',
+        'Grass': '#78C850',
+        'Lightning': '#F8D030',
+        'Metal': '#B8B8D0',
+        'Psychic': '#F85888',
+        'Water': '#6890F0',
+        'Unown': '#68A090'
+    };
+
+    // Iconos de energía por tipo (emojis como fallback sencillo)
+    typeIcons: { [key: string]: string } = {
+        'Colorless': '⭐',
+        'Darkness': '🌑',
+        'Dragon': '🐉',
+        'Fairy': '🧚',
+        'Fighting': '👊',
+        'Fire': '🔥',
+        'Grass': '🌿',
+        'Lightning': '⚡',
+        'Metal': '⚙️',
+        'Psychic': '🔮',
+        'Water': '💧',
+        'Unown': '❓'
+    };
+
     constructor(
         private cardsService: CardsService,
         private deckService: DeckService,
@@ -93,10 +141,65 @@ export class DeckCreateUpadateComponent implements OnInit {
         return this.form.controls;
     }
 
+    // Traducir tipo al español
+    translateType(type: string): string {
+        return this.typeTranslations[type] || type;
+    }
+
+    // Obtener color del tipo
+    getTypeColor(type: string): string {
+        return this.typeColors[type] || '#888';
+    }
+
+    // Obtener icono del tipo
+    getTypeIcon(type: string): string {
+        return this.typeIcons[type] || '⭐';
+    }
+
+    // Contar cuántas copias de una carta hay en el mazo
+    getCardCountInDeck(card: Card): number {
+        return this.itensDeck.filter(c => c.name === card.name).length;
+    }
+
+    // Comprobar si se puede añadir más copias (máx 4)
+    canAddCard(card: Card): boolean {
+        return this.getCardCountInDeck(card) < 4;
+    }
+
+    // Añadir carta directamente (sin abrir modal)
+    quickAddToDeck(card: Card, event: Event): void {
+        event.stopPropagation();
+        if (this.canAddCard(card)) {
+            this.itensDeck.push(card);
+        }
+    }
+
+    // Eliminar una copia de una carta del mazo (sin abrir modal)
+    quickRemoveFromDeck(card: Card, event: Event): void {
+        event.stopPropagation();
+        const index = this.itensDeck.findIndex(c => c.name === card.name);
+        if (index !== -1) {
+            this.itensDeck.splice(index, 1);
+        }
+    }
+
+    // Eliminar una copia de una carta del mazo (desde la vista del mazo)
+    removeDeckCard(card: Card, event: Event): void {
+        event.stopPropagation();
+        const index = this.itensDeck.indexOf(card);
+        if (index !== -1) {
+            this.itensDeck.splice(index, 1);
+        }
+    }
+
+    // El botón "Añadir Cartas" solo abre el drawer si el nombre no está vacío
     toggleDrawer(): void {
+        if (!this.isDrawerOpen && !this.deck.name.trim()) {
+            this.formSubmitted = true;
+            return;
+        }
         this.isDrawerOpen = !this.isDrawerOpen;
         if (this.isDrawerOpen) {
-            // Resetear scroll al abrir el drawer
             this.currentPage = 1;
             this.hasMoreCards = true;
             this.currentSearchType = 'all';
@@ -121,11 +224,9 @@ export class DeckCreateUpadateComponent implements OnInit {
             });
     }
 
-    // Infinite scroll: detectar cuando el usuario llega al fondo del drawer
     onDrawerScroll(event: any): void {
         const element = event.target;
-        const threshold = 200; // píxeles antes del final para empezar a cargar
-
+        const threshold = 200;
         if (element.scrollHeight - element.scrollTop - element.clientHeight < threshold) {
             this.loadMoreCards();
         }
@@ -202,7 +303,6 @@ export class DeckCreateUpadateComponent implements OnInit {
 
     onInputChange(): void {
         const searchTerm = this.searchTerm.trim();
-
         if (!searchTerm) {
             this.cards = [];
             this.loadCard();
@@ -220,7 +320,17 @@ export class DeckCreateUpadateComponent implements OnInit {
     }
 
     addToDeck(card: Card): void {
-        this.itensDeck.push(card);
+        if (this.canAddCard(card)) {
+            this.itensDeck.push(card);
+        }
+        this.toggleModal();
+    }
+
+    removeFromDeckModal(card: Card): void {
+        const index = this.itensDeck.findIndex(c => c.name === card.name);
+        if (index !== -1) {
+            this.itensDeck.splice(index, 1);
+        }
         this.toggleModal();
     }
 
@@ -233,13 +343,11 @@ export class DeckCreateUpadateComponent implements OnInit {
             if (this.deckId !== 'null') {
                 const updated = this.deckService.updateDeck(this.deck);
                 if (updated) {
-                    this.toggleModal();
                     this._router.navigateByUrl('/');
                 }
             } else {
                 const saved = this.deckService.addToDeck(this.deck);
                 if (saved) {
-                    this.toggleModal();
                     this._router.navigateByUrl('/');
                 }
             }

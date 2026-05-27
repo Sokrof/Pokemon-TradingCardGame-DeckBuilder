@@ -1,6 +1,5 @@
-/* Estilos para los íconos dentro de las tarjetas */
 .card svg.material-icons path {
-    fill: #888; /* Color de relleno gris para los íconos */
+    fill: #888;
 }
 
 :host .content{
@@ -9,7 +8,6 @@
     background-position: center;
 }
 
-/* Estilos para el contenedor de las tarjetas */
 .card-container {
     display: flex; 
     flex-wrap: wrap; 
@@ -17,43 +15,72 @@
     margin-top: 16px; 
 }
 
-/* Estilos generales para las tarjetas */
 .card {
-    all: unset; /* Reinicia todos los estilos heredados */
-    transition: all 0.2s ease-in-out; /* Transición suave para cambios de estilo */
+    all: unset;
+    transition: all 0.2s ease-in-out;
 }
 
-/* Estilos para las tarjetas, excepto la última en el contenedor */
+/* Forzar que las cartas mantengan posicionamiento relativo para los badges absolutos */
+.grid-card-fix {
+    position: relative !important;
+    display: block !important;
+}
+
+/* NÚMERO AZUL FIJO: Siempre se renderiza arriba a la izquierda y visible */
+.always-visible-badge {
+    position: absolute !important;
+    top: 6px !important;
+    left: 6px !important;
+    background-color: #2563eb !important; /* bg-blue-600 */
+    color: #ffffff !important;
+    border-radius: 9999px !important;
+    width: 28px !important;
+    height: 28px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1) !important;
+    z-index: 40 !important;
+}
+
+/* CONTENEDOR DE BOTONES +/- INFERIORES: Solo aparece abajo en hover */
+.hover-action-container {
+    position: absolute !important;
+    bottom: 8px !important;
+    left: 0 !important;
+    right: 0 !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    z-index: 45 !important;
+}
+
 .card-container .card:not(:last-child) {
-    margin-right: 0; /* Elimina el margen derecho de la última tarjeta en la fila */
+    margin-right: 0;
 }
 
-/* Estilos específicos para las tarjetas pequeñas */
 .card.card-small {
-    height: 16px; /* Altura de la tarjeta pequeña de 16 píxeles */
-    width: 168px; /* Ancho de la tarjeta pequeña de 168 píxeles */
+    height: 16px;
+    width: 168px;
 }
 
-/* Estilos para las tarjetas que no son resaltadas */
 .card-container .card:not(.highlight-card) {
-    cursor: pointer; /* Cambia el cursor al pasar sobre la tarjeta */
+    cursor: pointer;
 }
 
-/* Efecto de elevación y sombra al pasar el ratón sobre las tarjetas */
 .card-container .card:not(.highlight-card):hover {
-    transform: translateY(-3px); /* Elevación de la tarjeta en 3 píxeles */
-    box-shadow: 0 4px 17px rgba(0, 0, 0, 0.35); /* Sombra suave */
+    transform: translateY(-3px);
+    box-shadow: 0 4px 17 rgba(0, 0, 0, 0.35);
 }
 
-/* Cambio de color para los íconos dentro de las tarjetas al pasar el ratón */
 .card-container .card:not(.highlight-card):hover .material-icons path {
-    fill: rgb(105, 103, 103); /* Cambio de color para los íconos al pasar el ratón */
+    fill: rgb(105, 103, 103);
 }
 
-/* Estilos para las tarjetas resaltadas */
 .card.highlight-card {
-    background-color: #1976d2; /* Color de fondo azul para las tarjetas resaltadas */
-    color: white; /* Color de texto blanco */
+    background-color: #1976d2;
+    color: white;
     font-weight: 600;
     border: none;
     width: auto; 
@@ -61,7 +88,6 @@
     position: relative; 
 }
 
-/* Estilos para los filtros de tarjetas */
 .card-filter {
     border-radius: 4px;
     border: 1px solid #eee; 
@@ -71,15 +97,45 @@
     margin: 0 8px 16px; 
     padding: 16px; 
     display: flex; 
-    flex-direction: row; /* Dirección de los elementos en fila */
-    justify-content: center; /* Centrar horizontalmente */
-    align-items: center; /* Alinear verticalmente */
-    line-height: 24px; /* Altura de línea */
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    line-height: 24px;
 }
 
-/* Estilos para el fondo del drawer*/
+.type-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    margin: 4px 4px;
+    border-radius: 20px;
+    border: 2px solid;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.type-chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    filter: brightness(1.1);
+}
+
+.type-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.type-label {
+    line-height: 1;
+}
+
 .drawer {
-    background-image: url('/assets/background-cards.png'); /* Imagen de fondo */
-    background-size: cover; /* Tamaño de la imagen de fondo que cubre */
-    background-position: center; /* Posición de la imagen de fondo centrada */
+    background-image: url('/assets/background-cards.png');
+    background-size: cover;
+    background-position: center;
 }
