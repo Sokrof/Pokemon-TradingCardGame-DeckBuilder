@@ -9,34 +9,29 @@ import { environment } from 'src/environments/environment.prod';
 })
 export class BaseService<T> {
 
-    // Define la URL base para las peticiones a la API, utilizando la configuración del entorno
+    // URL base de TCGdex (no necesita API key)
     baseUrl = environment.apiUrl;
 
     constructor(protected http: HttpClient) { }
 
     // Método para obtener datos de la API
+    // TCGdex devuelve arrays directamente, sin wrapper "data"
     read(): Observable<T[]> {
-        // Realiza una petición HTTP GET a la URL base
-        return this.http.get<{ data: T[] }>(`${this.baseUrl}`).pipe(
-            // Extrae la propiedad 'data' del objeto de respuesta
-            map(response => response.data),
-            // Si hay un error, devuelve un observable vacío
+        return this.http.get<T[]>(`${this.baseUrl}`).pipe(
             catchError((e: any) => {
+                console.error('Error en la petición:', e);
                 return EMPTY;
             })
         );
     }
 
-    // Método para buscar datos en la API basados en una cadena de consulta
+    // Método para buscar cartas por nombre
+    // TCGdex usa query params normales: ?name=pikachu
     searchCards(query: string): Observable<T[]> {
-        // Define los parámetros para la consulta de búsqueda
-        const params = { q: query };
-        // Realiza una petición HTTP GET a la URL base con los parámetros definidos
-        return this.http.get<{ data: T[] }>(this.baseUrl, { params }).pipe(
-            // Extrae la propiedad 'data' del objeto de respuesta
-            map(response => response.data),
-            // Si hay un error, devuelve un observable vacío
+        const params = { name: query };
+        return this.http.get<T[]>(this.baseUrl, { params }).pipe(
             catchError((e: any) => {
+                console.error('Error en la búsqueda:', e);
                 return EMPTY;
             })
         );

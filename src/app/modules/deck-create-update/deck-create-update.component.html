@@ -8,7 +8,7 @@
 
         <!-- Formulario de creación o edición de mazos -->
         <div class="container max-w-md">
-            <form autocom plete="off" novalidate [formGroup]="form" (ngSubmit)="onSubmit()">
+            <form autocomplete="off" novalidate [formGroup]="form" (ngSubmit)="onSubmit()">
 
                 <!-- Input para el nombre del mazo -->
                 <div>
@@ -63,7 +63,7 @@
     </div>
 
     <!-- Cajón de selección de cartas -->
-    <div *ngIf="isDrawerOpen" class="fixed top-0 right-0 h-full w-full bg-white shadow-lg z-50 overflow-y-auto drawer">
+    <div *ngIf="isDrawerOpen" class="fixed top-0 right-0 h-full w-full bg-white shadow-lg z-50 overflow-y-auto drawer" (scroll)="onDrawerScroll($event)">
         <div class="p-4">
             <div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                 <h3 class="text-2xl font-semibold flex">CARTAS</h3>
@@ -88,7 +88,7 @@
                         </div>
                         <input type="text" id="default-search" [(ngModel)]="searchTerm" (input)="onInputChange()"
                             class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="    Ingresa el nombre EXACTO del pokémon" required />
+                            placeholder="    Ingresa el nombre del pokémon" required />
                     </div>
                 </div>
 
@@ -117,11 +117,22 @@
 
                     <!-- Mensaje si no hay cartas -->
                     <ng-template #noCardsRef>
-                        <div class="flex flex-col items-center">
-                            <h2 class="text-xl font-semibold">No se encontraron resultados (Espera 5s..)</h2>
+                        <div class="flex flex-col items-center" *ngIf="!isLoading">
+                            <h2 class="text-xl font-semibold">No se encontraron resultados</h2>
                         </div>
                     </ng-template>
 
+                </div>
+
+                <!-- Indicador de carga de más cartas (infinite scroll) -->
+                <div *ngIf="isLoadingMore" class="flex flex-col items-center py-4">
+                    <app-loading></app-loading>
+                    <p class="text-sm text-gray-500 mt-2">Cargando más cartas...</p>
+                </div>
+
+                <!-- Mensaje de fin de resultados -->
+                <div *ngIf="!hasMoreCards && cards.length > 0" class="flex flex-col items-center py-4">
+                    <p class="text-sm text-gray-400">No hay más cartas</p>
                 </div>
 
             </div>
@@ -131,6 +142,7 @@
 </div>
 
 <!-- Modal para detalles de carta -->
+<!-- CAMBIOS TCGdex: category en vez de supertype, attack.effect en vez de attack.text -->
 <div *ngIf="showModal"
     class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
     <div class="relative w-auto my-6 mx-auto max-w-4xl">
@@ -151,23 +163,23 @@
                 <div class="col-span-2">
                     <div class="flex justify-between">
                         <h3 class="text-xl font-bold flex">ID: {{cardDetails.id}}</h3>
-                        <h3 class="text-xl font-bold flex">{{cardDetails.supertype}} - {{cardDetails.subtypes}}</h3>
+                        <h3 class="text-xl font-bold flex">{{cardDetails.category}} - {{cardDetails.stage}}</h3>
                         <h3 class="text-xl font-bold flex">HP: {{cardDetails.hp}}</h3>
                     </div>
-                    <h4 class="text-lg font-semibold">Detalles:</h4>
-                    <p class="my-4 text-blueGray-500 text-lg leading-relaxed">
-                        {{cardDetails.rules}}
+                    <h4 class="text-lg font-semibold" *ngIf="cardDetails.description">Detalles:</h4>
+                    <p class="my-4 text-blueGray-500 text-lg leading-relaxed" *ngIf="cardDetails.description">
+                        {{cardDetails.description}}
                     </p>
 
-                    <p class="my-4 text-blueGray-500 text-lg leading-relaxed">
+                    <p class="my-4 text-blueGray-500 text-lg leading-relaxed" *ngIf="cardDetails.types && cardDetails.types.length > 0">
                         <b>Tipos:</b> {{cardDetails.types}}
                     </p>
 
-                    <h4 class="text-lg font-semibold">Movimientos:</h4>
+                    <h4 class="text-lg font-semibold" *ngIf="cardDetails.attacks && cardDetails.attacks.length > 0">Movimientos:</h4>
 
                     <div *ngFor="let attack of cardDetails.attacks">
-                        <h4 class="font-bold">{{ attack.name }}</h4>
-                        <p class="my-4 text-blueGray-500 text-lg leading-relaxed">{{ attack.text }}</p>
+                        <h4 class="font-bold">{{ attack.name }} <span *ngIf="attack.damage">- {{ attack.damage }}</span></h4>
+                        <p class="my-4 text-blueGray-500 text-lg leading-relaxed">{{ attack.effect }}</p>
                     </div>
 
                     <div *ngFor="let weakness of cardDetails.weaknesses">

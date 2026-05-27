@@ -1,201 +1,272 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
-import { cardCountValidator, uniqueCardNameValidator } from 'src/app/_helpers/validator'; // Importa los validadores personalizados
-import { Card } from 'src/app/_models/card.model'; 
-import { Deck } from 'src/app/_models/deck.model'; 
-import { CardsService } from 'src/app/_services/cards.service'; 
-import { DeckService } from 'src/app/_services/desk.services'; 
-import { TypeService } from 'src/app/_services/type.services'; 
-import { LoadingComponent } from 'src/shared/loading/loading.component'; 
-import { TitlePageComponent } from 'src/shared/title-page/title-page.component'; 
+import { cardCountValidator, uniqueCardNameValidator } from 'src/app/_helpers/validator';
+import { Card } from 'src/app/_models/card.model';
+import { Deck } from 'src/app/_models/deck.model';
+import { CardsService } from 'src/app/_services/cards.service';
+import { DeckService } from 'src/app/_services/desk.services';
+import { TypeService } from 'src/app/_services/type.services';
+import { LoadingComponent } from 'src/shared/loading/loading.component';
+import { TitlePageComponent } from 'src/shared/title-page/title-page.component';
 
 @Component({
-  selector: 'app-deck-create-update',
-  templateUrl: './deck-create-update.component.html', 
-  styleUrls: ['./deck-create-update.component.scss'], 
-  standalone: true, 
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TitlePageComponent, // Importa el componente de título
-    LoadingComponent // Importa el componente de carga
-  ]
+    selector: 'app-deck-create-update',
+    templateUrl: './deck-create-update.component.html',
+    styleUrls: ['./deck-create-update.component.scss'],
+    standalone: true,
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        TitlePageComponent,
+        LoadingComponent
+    ]
 })
 export class DeckCreateUpadateComponent implements OnInit {
 
-  form!: FormGroup; // Formulario reactivo
+    form!: FormGroup;
 
-  cards: Card[] = []; // Lista de cartas
-  searchTerm: string = ''; // Término de búsqueda
-  decks: Deck[] = []; // Lista de barajas
-  types: [] = []; // Lista de tipos
+    cards: Card[] = [];
+    searchTerm: string = '';
+    decks: Deck[] = [];
+    types: [] = [];
 
-  showModal: boolean = false; // Indica si se muestra el modal
-  cardDetails!: Card; // Detalles de la carta seleccionada
+    showModal: boolean = false;
+    cardDetails!: Card;
 
-  isDrawerOpen: boolean = false; // Indica si el cajón está abierto
-  itensDeck: Card[] = []; // Lista de cartas en la baraja
-  deck: Deck = new Deck(); // Objeto de baraja
+    isDrawerOpen: boolean = false;
+    itensDeck: Card[] = [];
+    deck: Deck = new Deck();
 
-  isLoading: boolean = false; // Indica si se está cargando
-  formSubmitted = false; // Indica si el formulario ha sido enviado
-  isDeck: boolean = false; // Indica si la carta está en la baraja
+    isLoading: boolean = false;
+    formSubmitted = false;
+    isDeck: boolean = false;
 
-  deckId: string = ''; // ID de la baraja
+    deckId: string = '';
 
-  constructor(
-    private cardsService: CardsService, // Servicio de cartas
-    private deckService: DeckService, // Servicio de barajas
-    private typeService: TypeService, // Servicio de tipos
-    private _router: Router, // Router
-    private _route: ActivatedRoute, // ActivatedRoute
-    private _formBuilder: FormBuilder // FormBuilder
-  ) { }
+    // Variables para infinite scroll
+    currentPage: number = 1;
+    isLoadingMore: boolean = false;
+    hasMoreCards: boolean = true;
+    currentSearchType: 'all' | 'name' | 'type' = 'all';
+    currentSearchValue: string = '';
 
-  ngOnInit(): void {
-    this.deckId = this._route.snapshot.paramMap.get('id') ?? ''; // Obtiene el ID de la baraja desde la URL
-    if (this.deckId) {
-      this.deckService.getDeckById(this.deckId).subscribe(deck => { // Obtiene la baraja por ID
-        if (deck) {
-          this.deck = deck; // Asigna la baraja obtenida
-          this.itensDeck = deck.cards // Asigna las cartas de la baraja
+    constructor(
+        private cardsService: CardsService,
+        private deckService: DeckService,
+        private typeService: TypeService,
+        private _router: Router,
+        private _route: ActivatedRoute,
+        private _formBuilder: FormBuilder
+    ) { }
+
+    ngOnInit(): void {
+        this.deckId = this._route.snapshot.paramMap.get('id') ?? '';
+        if (this.deckId) {
+            this.deckService.getDeckById(this.deckId).subscribe(deck => {
+                if (deck) {
+                    this.deck = deck;
+                    this.itensDeck = deck.cards;
+                }
+            });
+        } else {
+            this.deck = new Deck();
+            this.itensDeck = [];
         }
-      });
-    } else {
-      this.deck = new Deck(); // Crea una nueva baraja
-      this.itensDeck = []; // Inicializa la lista de cartas de la baraja
+
+        this.loadCard();
+        this.loadTyps();
+        this.buildForm();
     }
 
-    this.loadCard(); // Carga las cartas
-    this.loadTyps(); // Carga los tipos
-    this.buildForm(); // Construye el formulario
-  }
-
-  // Especifica el mínimo y máximo de cartas
-  buildForm(): void {
-    this.form = this._formBuilder.group({
-      name: ['', Validators.required], // Campo de nombre requerido
-      cards: [[], [cardCountValidator(2, 60), uniqueCardNameValidator()]] // Campo de cartas con validadores personalizados
-    });
-  }
-
-  get f(): any {
-    return this.form.controls; // Obtiene los controles del formulario
-  }
-
-  toggleDrawer(): void {
-    this.isDrawerOpen = !this.isDrawerOpen; // Alterna el estado del drawer
-  }
-
-  loadCard(): void {
-    this.isLoading = true; // Indica que se está cargando
-    this.cardsService
-      .read()
-      .pipe(finalize(() => (this.isLoading = false))) // Indica que se ha terminado de cargar
-      .subscribe((response) => {
-        this.cards = response // Asigna las cartas obtenidas
-      });
-  }
-
-  search(query: string, type?: string): void {
-    this.isLoading = true; // Indica que se está cargando
-
-    let queryParams = `name:${query}`;
-    if (type) {
-      queryParams = ` types:${type}`;
+    buildForm(): void {
+        this.form = this._formBuilder.group({
+            name: ['', Validators.required],
+            cards: [[], [cardCountValidator(2, 60), uniqueCardNameValidator()]]
+        });
     }
 
-    this.cardsService.searchCards(queryParams)
-      .pipe(
-        finalize(() => (this.isLoading = false))) // Indica que se ha terminado de cargar
-      .subscribe(
-        (response) => {
-          this.cards = response; // Asigna las cartas obtenidas
-        },
-        (error: any) => {
-          console.error('Erro na busca de cartas:', error); // Registra un error en la consola
-          this.cards = []; // Reinicia la lista de cartas
+    get f(): any {
+        return this.form.controls;
+    }
+
+    toggleDrawer(): void {
+        this.isDrawerOpen = !this.isDrawerOpen;
+        if (this.isDrawerOpen) {
+            // Resetear scroll al abrir el drawer
+            this.currentPage = 1;
+            this.hasMoreCards = true;
+            this.currentSearchType = 'all';
+            this.currentSearchValue = '';
+            this.cards = [];
+            this.loadCard();
         }
-      );
-  }
-
-  filterType(type: string): void {
-    this.searchTerm = '';
-    this.search('', type); // Realiza la búsqueda por tipo
-  }
-
-  onInputChange(): void {
-    const searchTerm = this.searchTerm.trim();
-
-    if (!searchTerm) {
-      this.loadCard(); // Carga todas las cartas
-    } else if (searchTerm.length >= 3) {
-      this.search(this.searchTerm); // Realiza la búsqueda por término
     }
-  }
 
-  loadTyps(): void {
-    this.typeService
-      .read()
-      .subscribe((response) => {
-        this.types = response // Asigna los tipos obtenidos
-      });
-  }
-
-  addToDeck(card: Card): void {
-    this.itensDeck.push(card); // Agrega una carta a la baraja
-    this.toggleModal(); // Alterna la visualización del modal
-  }
-
-  onSubmit(): void {
-    this.form.controls['cards'].setValue(this.itensDeck); // Asigna las cartas seleccionadas al formulario
-    this.formSubmitted = true; // Indica que se ha enviado el formulario
-    if (this.form.valid) {
-      this.deck.cards = this.itensDeck; // Asigna las cartas seleccionadas a la baraja
-
-      if (this.deckId !== 'null') {
-        const updated = this.deckService.updateDeck(this.deck); // Actualiza la baraja existente
-        if (updated) {
-          this.toggleModal(); // Alterna la visualización del modal
-          this._router.navigateByUrl('/'); // Redirige a la página de inicio
-        } 
-      } else {
-        const saved = this.deckService.addToDeck(this.deck); // Agrega una nueva baraja
-        if (saved) {
-          this.toggleModal(); // Alterna la visualización del modal
-          this._router.navigateByUrl('/'); // Redirige a la página de inicio
-        } 
-      }
-
+    loadCard(): void {
+        this.isLoading = true;
+        this.currentPage = 1;
+        this.currentSearchType = 'all';
+        this.currentSearchValue = '';
+        this.hasMoreCards = true;
+        this.cardsService
+            .loadPage(1)
+            .pipe(finalize(() => (this.isLoading = false)))
+            .subscribe((response) => {
+                this.cards = response;
+                if (response.length === 0) this.hasMoreCards = false;
+            });
     }
-  }
 
-  getList(): void {
-    this.deckService.getDeck().subscribe(deck => {
-      this.decks = deck; // Asigna las barajas obtenidas
-    });
-  }
+    // Infinite scroll: detectar cuando el usuario llega al fondo del drawer
+    onDrawerScroll(event: any): void {
+        const element = event.target;
+        const threshold = 200; // píxeles antes del final para empezar a cargar
 
-  toggleModal(): void {
-    this.showModal = !this.showModal; // Alterna la visualización del modal
-  }
-
-  getDetails(item: Card, deck: boolean): void {
-    this.cardDetails = item; // Asigna los detalles de la carta seleccionada
-    this.isDeck = deck; // Indica si la carta está en una baraja
-    this.toggleModal(); // Alterna la visualización del modal
-  }
-
-  deleteCartDeck(card: Card): void {
-    const index = this.itensDeck.indexOf(card); // Obtiene el índice de la carta en la baraja
-    if (index !== -1) {
-      this.itensDeck.splice(index, 1); // Elimina la carta de la baraja
-      this.toggleModal(); // Alterna la visualización del modal
+        if (element.scrollHeight - element.scrollTop - element.clientHeight < threshold) {
+            this.loadMoreCards();
+        }
     }
-  }
 
+    loadMoreCards(): void {
+        if (this.isLoadingMore || !this.hasMoreCards) return;
+
+        this.isLoadingMore = true;
+        this.currentPage++;
+
+        let extraParams: { [key: string]: string } | undefined;
+        if (this.currentSearchType === 'name' && this.currentSearchValue) {
+            extraParams = { name: this.currentSearchValue };
+        } else if (this.currentSearchType === 'type' && this.currentSearchValue) {
+            extraParams = { types: this.currentSearchValue };
+        }
+
+        this.cardsService
+            .loadPage(this.currentPage, 20, extraParams)
+            .pipe(finalize(() => (this.isLoadingMore = false)))
+            .subscribe((response) => {
+                if (response.length === 0) {
+                    this.hasMoreCards = false;
+                } else {
+                    this.cards = [...this.cards, ...response];
+                }
+            });
+    }
+
+    search(query: string, type?: string): void {
+        this.isLoading = true;
+        this.currentPage = 1;
+        this.hasMoreCards = true;
+        this.cards = [];
+
+        if (type) {
+            this.currentSearchType = 'type';
+            this.currentSearchValue = type;
+            this.cardsService.loadPage(1, 20, { types: type })
+                .pipe(finalize(() => (this.isLoading = false)))
+                .subscribe(
+                    (response) => {
+                        this.cards = response;
+                        if (response.length === 0) this.hasMoreCards = false;
+                    },
+                    (error: any) => {
+                        console.error('Error en la búsqueda de cartas:', error);
+                        this.cards = [];
+                    }
+                );
+        } else {
+            this.currentSearchType = 'name';
+            this.currentSearchValue = query;
+            this.cardsService.loadPage(1, 20, { name: query })
+                .pipe(finalize(() => (this.isLoading = false)))
+                .subscribe(
+                    (response) => {
+                        this.cards = response;
+                        if (response.length === 0) this.hasMoreCards = false;
+                    },
+                    (error: any) => {
+                        console.error('Error en la búsqueda de cartas:', error);
+                        this.cards = [];
+                    }
+                );
+        }
+    }
+
+    filterType(type: string): void {
+        this.searchTerm = '';
+        this.search('', type);
+    }
+
+    onInputChange(): void {
+        const searchTerm = this.searchTerm.trim();
+
+        if (!searchTerm) {
+            this.cards = [];
+            this.loadCard();
+        } else if (searchTerm.length >= 3) {
+            this.search(this.searchTerm);
+        }
+    }
+
+    loadTyps(): void {
+        this.typeService
+            .read()
+            .subscribe((response) => {
+                this.types = response;
+            });
+    }
+
+    addToDeck(card: Card): void {
+        this.itensDeck.push(card);
+        this.toggleModal();
+    }
+
+    onSubmit(): void {
+        this.form.controls['cards'].setValue(this.itensDeck);
+        this.formSubmitted = true;
+        if (this.form.valid) {
+            this.deck.cards = this.itensDeck;
+
+            if (this.deckId !== 'null') {
+                const updated = this.deckService.updateDeck(this.deck);
+                if (updated) {
+                    this.toggleModal();
+                    this._router.navigateByUrl('/');
+                }
+            } else {
+                const saved = this.deckService.addToDeck(this.deck);
+                if (saved) {
+                    this.toggleModal();
+                    this._router.navigateByUrl('/');
+                }
+            }
+        }
+    }
+
+    getList(): void {
+        this.deckService.getDeck().subscribe(deck => {
+            this.decks = deck;
+        });
+    }
+
+    toggleModal(): void {
+        this.showModal = !this.showModal;
+    }
+
+    getDetails(item: Card, deck: boolean): void {
+        this.cardDetails = item;
+        this.isDeck = deck;
+        this.toggleModal();
+    }
+
+    deleteCartDeck(card: Card): void {
+        const index = this.itensDeck.indexOf(card);
+        if (index !== -1) {
+            this.itensDeck.splice(index, 1);
+            this.toggleModal();
+        }
+    }
 }

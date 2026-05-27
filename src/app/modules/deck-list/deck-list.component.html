@@ -43,8 +43,8 @@
                                     <path d="M2 12l1.5 -2a11 11 0 0 1 17 0l1.5 2" />
                                 </svg>
                             </a>
-                            <!-- Editar mazo -->
-                            <a class="cursor-pointer" routerLink="/create/{{deck.id}}">
+                            <!-- Editar mazo (BUG ARREGLADO: faltaba /mazos/) -->
+                            <a class="cursor-pointer" routerLink="/mazos/create/{{deck.id}}">
                                 <svg class="h-6 w-6 text-slate-700" viewBox="0 0 24 24" stroke-width="2"
                                     stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path stroke="none" d="M0 0h24v24H0z" />
@@ -179,12 +179,10 @@
                 </p>
             </div>
             <div class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
-                <!-- Botón para cancelar -->
                 <button
                     class="bg-slate-400 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button" (click)="toggleModal()">Cancelar
                 </button>
-                <!-- Botón para confirmar eliminación -->
                 <button
                     class="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button" (click)="deleteDeck(deckId)">Confirmar
@@ -198,6 +196,7 @@
 <div *ngIf="showModal" class="opacity-25 fixed inset-0 z-40 bg-black"></div>
 
 <!-- Modal para mostrar detalles de una carta -->
+<!-- CAMBIOS TCGdex: category en vez de supertype, attack.effect en vez de attack.text -->
 <div *ngIf="showModalCard"
     class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
     <div class="relative w-auto my-6 mx-auto max-w-4xl">
@@ -213,42 +212,37 @@
             </div>
             <div class="relative p-6 flex-auto grid grid-cols-3 gap-2">
                 <div class="col-span-1">
-                    <!-- Imagen de la carta -->
                     <img [src]="cardDetails.images.small">
                 </div>
                 <div class="col-span-2">
-                    <!-- Detalles de la carta -->
                     <div class="flex justify-between">
                         <h3 class="text-xl font-bold flex">ID: {{cardDetails.id}}</h3>
-                        <h3 class="text-xl font-bold flex">{{cardDetails.supertype}} - {{cardDetails.subtypes}}</h3>
+                        <h3 class="text-xl font-bold flex">{{cardDetails.category}} - {{cardDetails.stage}}</h3>
                         <h3 class="text-xl font-bold flex">HP: {{cardDetails.hp}}</h3>
                     </div>
-                    <h4 class="text-lg font-semibold">Rules:</h4>
-                    <p class="my-4 text-blueGray-500 text-lg leading-relaxed">
-                        {{cardDetails.rules}}
+                    <h4 class="text-lg font-semibold" *ngIf="cardDetails.description">Detalles:</h4>
+                    <p class="my-4 text-blueGray-500 text-lg leading-relaxed" *ngIf="cardDetails.description">
+                        {{cardDetails.description}}
                     </p>
 
-                    <p class="my-4 text-blueGray-500 text-lg leading-relaxed">
-                        <b>Types:</b> {{cardDetails.types}}
+                    <p class="my-4 text-blueGray-500 text-lg leading-relaxed" *ngIf="cardDetails.types && cardDetails.types.length > 0">
+                        <b>Tipos:</b> {{cardDetails.types}}
                     </p>
 
-                    <!-- Ataques de la carta -->
-                    <h4 class="text-lg font-semibold">Attacks:</h4>
+                    <h4 class="text-lg font-semibold" *ngIf="cardDetails.attacks && cardDetails.attacks.length > 0">Movimientos:</h4>
 
                     <div *ngFor="let attack of cardDetails.attacks">
-                        <h4 class="font-bold">{{ attack.name }}</h4>
-                        <p class="my-4 text-blueGray-500 text-lg leading-relaxed">{{ attack.text }}</p>
+                        <h4 class="font-bold">{{ attack.name }} <span *ngIf="attack.damage">- {{ attack.damage }}</span></h4>
+                        <p class="my-4 text-blueGray-500 text-lg leading-relaxed">{{ attack.effect }}</p>
                     </div>
 
-                    <!-- Debilidades de la carta -->
                     <div *ngFor="let weakness of cardDetails.weaknesses">
                         <p class="my-4 text-blueGray-500 text-lg leading-relaxed">
-                            <b>Weakness:</b> {{ weakness.type }} {{ weakness.value }}
+                            <b>Debilidades:</b> {{ weakness.type }} {{ weakness.value }}
                         </p>
                     </div>
                 </div>
             </div>
-            <!-- Botón para salir del modal -->
             <div class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                 <button
                     class="bg-slate-400 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
@@ -259,5 +253,4 @@
     </div>
 </div>
 
-<!-- Fondo oscurecido cuando se muestra el modal de detalles de la carta -->
 <div *ngIf="showModalCard" class="opacity-25 fixed inset-0 z-40 bg-black"></div>
